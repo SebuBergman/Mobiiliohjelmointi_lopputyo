@@ -6,7 +6,7 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {
   const [keyword, setKeyword] = useState('Star Wars');
   const [searchResults, setSearchResults] = useState([]);
   const [movie, setMovie] = useState('');
