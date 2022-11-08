@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
 
@@ -63,6 +63,12 @@ export default function SearchScreen() {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <CustomRatingBar />
+            <Pressable
+              style={[styles.buttonpopup, styles.buttonClose]}
+              //onPress={rateMovie}
+              >
+              <Text style={styles.textStyle}>Save rating</Text>
+          </Pressable>
           </View>
         </View>
         </Modal>
@@ -153,7 +159,6 @@ export default function SearchScreen() {
         <View style={styles.searchContainer}>
           <Input placeholder="Input" onChangeText={text => setKeyword(text) } />
           <Button title="Search" type="outline" onPress={getMovie} ></Button>
-          <RatingPopup />
         </View>
         <View style={styles.searchResultsContainer}>
           {
@@ -165,7 +170,7 @@ export default function SearchScreen() {
                   <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
                   <View style={styles.buttonContainer}>
                     <Button title="Add to watchlist" type="outline" onPress={() => saveMovie(item)}></Button>
-                    <Button title="Rate" type="outline" onPress={() => saveMovie(item)}></Button>
+                    <Button title="Rate Movie" onPress={() => navigation.push('RateMovie', item)} />
                   </View>
                 </ListItem.Content>
               </ListItem>

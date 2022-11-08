@@ -7,6 +7,7 @@ import { Ionicons} from '@expo/vector-icons';
 import SearchScreen from './src/components/search';
 import HomeScreen from './src/components/mainpage';
 import Watchlist from './src/components/watchlist';
+import RateMovie from './src/components/ratemovie';
 
 const screenOptions = ({ route }) => ({
   headerShown: false,
@@ -37,6 +38,8 @@ const HomeStackScreen = () => (
 
 const SearchStackScreen = () => (
   <SearchStack.Navigator>
+    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search' }}/>
+    <SearchStack.Screen name="RateMovie" component={RateMovie} />
   </SearchStack.Navigator>
 );
 
