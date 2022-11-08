@@ -37,7 +37,6 @@ const HomeStackScreen = () => (
 
 const SearchStackScreen = () => (
   <SearchStack.Navigator>
-    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search' }}/>
   </SearchStack.Navigator>
 );
 
