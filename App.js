@@ -30,14 +30,14 @@ const SearchStack = createNativeStackNavigator();
 
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
-    <HomeStack.Screen name="Home" component={HomeScreen} options={{headerShown: false}} />
+    <HomeStack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}} />
     <HomeStack.Screen name="Watchlist" component={Watchlist} />
   </HomeStack.Navigator>
 );
 
 const SearchStackScreen = () => (
   <SearchStack.Navigator>
-    <SearchStack.Screen name="Home" component={SearchScreen} />
+    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search' }}/>
   </SearchStack.Navigator>
 );
 
