@@ -51,7 +51,6 @@ export default function SearchScreen({ navigation }) {
     return (
       <View>
         <Modal
-          animationType="slide"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
@@ -62,10 +61,12 @@ export default function SearchScreen({ navigation }) {
         {/* Add a rating */}
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <CustomRatingBar />
+            <View style={styles.ratingsContainer}>
+              <CustomRatingBar />
+            </View>
             <Pressable
               style={[styles.buttonpopup, styles.buttonClose]}
-              //onPress={rateMovie}
+              onPress={rateMovie}
               >
               <Text style={styles.textStyle}>Save rating</Text>
           </Pressable>
@@ -103,15 +104,17 @@ export default function SearchScreen({ navigation }) {
       tx.executeSql('insert into watchlist (title, poster, release_date) values (?, ?, ?);',
         [item.original_title, item.poster_path, item.release_date]);
     }, errorAlertSave, updateWatchlist);
+    alert('Movie added to watchlist');
   }
 
   const rateMovie = (item) => {
     console.log(item);
 
-    db.transaction(tx => {
+    /*db.transaction(tx => {
       tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',
         [item.original_title, item.poster_path, item.release_date, movieWithRating.rating]);
-    }, errorAlertSave, updateRatingsList);
+    }, errorAlertSave, updateRatingsList);*/
+    setModalVisible(!modalVisible);
   }
 
   const updateWatchlist = () => {
@@ -119,7 +122,7 @@ export default function SearchScreen({ navigation }) {
       tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
         setItemList(rows._array)
       );
-    }, null, null);
+    }, null, watchlistAddedAlert);
   }
 
   const updateRatingsList = () => {
@@ -142,6 +145,10 @@ export default function SearchScreen({ navigation }) {
 
   const errorAlertSave = () => {
     Alert.alert('Something went wrong saving');
+  }
+
+  const watchlistAddedAlert = () => {
+    Alert.alert('Added to watchlist');
   }
   
   const getMovie = () => {
@@ -170,7 +177,7 @@ export default function SearchScreen({ navigation }) {
                   <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
                   <View style={styles.buttonContainer}>
                     <Button title="Add to watchlist" type="outline" onPress={() => saveMovie(item)}></Button>
-                    <Button title="Rate Movie" onPress={() => navigation.push('RateMovie', item)} />
+                    <RatingPopup />
                   </View>
                 </ListItem.Content>
               </ListItem>
@@ -179,6 +186,8 @@ export default function SearchScreen({ navigation }) {
         </View>
       </View>
   );
+
+  //<Button title="Rate Movie" onPress={rateMovie} />
 }
 
 const styles = StyleSheet.create({
@@ -254,5 +263,9 @@ const styles = StyleSheet.create({
   addRatingButtonContainer: {
     alignItems: 'center',
     marginTop: 5,
+  },
+
+  ratingsContainer: {
+    marginBottom: 10,
   },
 });

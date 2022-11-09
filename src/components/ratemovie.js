@@ -7,7 +7,7 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('moviedb.db');
 
 export default function RateMovie({ navigation, route }) {
-    const { MovieDetails } = route.params;
+    const { movieForRating } = route.params;
     const [movie, setMovie] = useState('');
     const [movieWithRating, setMovieWithRating] = useState('');
 
@@ -21,6 +21,25 @@ export default function RateMovie({ navigation, route }) {
     //Rating PopUp consts
     const [defaultRating, setDefaultRating] = useState(2);
     const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
+
+    const rateMovie = (item) => {
+    console.log(defaultRating);
+    console.log(movieForRating);
+
+    /*db.transaction(tx => {
+      tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',
+        [item.original_title, item.poster_path, item.release_date, movieWithRating.rating]);
+    }, errorAlertSave, updateRatingsList);*/
+    
+    }
+
+    const updateRatingsList = () => {
+    db.transaction(tx => {
+      tx.executeSql('select * from ratings;', [], (_, { rows }) =>
+        setItemList(rows._array)
+      );
+    }, null, null);
+    }
 
     const CustomRatingBar = () => {
     return (
@@ -48,37 +67,11 @@ export default function RateMovie({ navigation, route }) {
 
     const RatingPopup = () => {
     return (
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
+      <View style={styles.ratingContainer}>
         {/* Add a rating */}
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <CustomRatingBar />
-            <Pressable
-              style={[styles.buttonpopup, styles.buttonClose]}
-              //onPress={rateMovie}
-              >
-              <Text style={styles.textStyle}>Save rating</Text>
-          </Pressable>
-          </View>
-        </View>
-        </Modal>
-        <View style={styles.addRatingButtonContainer}>
-          <Pressable
-              title="Add Rating"
-              style={[styles.buttonpopup, styles.buttonOpen]}
-              onPress={() => setModalVisible(true)} >
-            <Text style={styles.textStylePopup}>Add rating</Text>
-          </Pressable>
-        </View>
+          <Image source={{uri: "https://image.tmdb.org/t/p/w500" + movieForRating}} />
+          <CustomRatingBar />
+          <Button onPress={rateMovie} title="Save Rating" />
       </View>
     )
   }
@@ -146,5 +139,20 @@ const styles = StyleSheet.create({
   addRatingButtonContainer: {
     alignItems: 'center',
     marginTop: 5,
+  },
+
+  ratingContainer: {
+    marginTop: 50,
+  },
+
+  customRatingBarStyle: {
+    justifyContent: "center",
+    flexDirection: "row",
+    marginTop: 30,
+  },
+  starImgStyle: {
+    width: 40,
+    height: 40,
+    resizeMode: "cover",
   },
 });
