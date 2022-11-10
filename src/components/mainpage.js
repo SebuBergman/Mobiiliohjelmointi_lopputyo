@@ -4,7 +4,8 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 export default function HomeScreen({ navigation }) {
   return (
       <View style={styles.container}>
-        <Text>Home screen</Text><Button onPress={() => navigation.push('Watchlist')} title="Watchlist" />
+        <Text>Home screen</Text>
+        <Text>More stuff added soon</Text>
       </View>
   );
 }
