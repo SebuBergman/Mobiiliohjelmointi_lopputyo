@@ -9,9 +9,9 @@ const db = SQLite.openDatabase('moviedb.db');
 export default function SearchScreen({ navigation }) {
   const [keyword, setKeyword] = useState();
   const [searchResults, setSearchResults] = useState([]);
-  const [movie, setMovie] = useState('');
-  const [movieWithRating, setMovieWithRating] = useState('');
-  const [watchlist2, setWatchlist2] = useState([]);
+  const [movieForRating, setMovieForRating] = useState('');
+  const [watchlist, setWatchlist] = useState([]);
+  const [ratingsList, setRatingsList] = useState([]);
 
   //Stars for rating
   const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
@@ -119,34 +119,33 @@ export default function SearchScreen({ navigation }) {
       tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',
         [item.original_title, item.poster_path, item.release_date, movieWithRating.rating]);
     }, errorAlertSave, updateRatingsList);*/
-    setModalVisible(!modalVisible);
+    //setModalVisible(!modalVisible);
+    setMovieForRating(item);
+
+    if (movieForRating != null) {
+      navigation.navigate('RateMovie', {
+                movieForRating,
+            });
+    } else {
+      alert('Please choose a movie to rate!');
+    }
   }
 
   const updateWatchlist = () => {
     db.transaction(tx => {
       tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
-        setWatchlist2(rows._array)
+        setWatchlist(rows._array)
       );
-      console.log(watchlist2);
+      console.log(watchlist);
     }, null, null);
   }
 
   const updateRatingsList = () => {
     db.transaction(tx => {
       tx.executeSql('select * from ratings;', [], (_, { rows }) =>
-        setItemList(rows._array)
+        setRatingsList(rows._array)
       );
     }, null, null);
-  }
-
-  const deleteItemsWatchlist = (id) => {
-    db.transaction(tx => {
-      tx.executeSql('delete from watchlist where id = ?;', [id]);
-    }, errorAlertDelete, updateWatchlist);
-  }
-
-  const errorAlertDelete = () => {
-    Alert.alert('Something went wrong with deletion');
   }
 
   const errorAlertSave = () => {
@@ -179,7 +178,8 @@ export default function SearchScreen({ navigation }) {
                   <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
                   <View style={styles.buttonContainer}>
                     <Button title="Add to watchlist" type="outline" onPress={() => saveMovie(item)}></Button>
-                    <RatingPopup />
+                    <Button title="Rate Movie" type="outline" onPress={() => rateMovie(item)}></Button>
+                    {/* <RatingPopup /> */}
                   </View>
                 </ListItem.Content>
               </ListItem>

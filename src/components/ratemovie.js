@@ -9,7 +9,9 @@ const db = SQLite.openDatabase('moviedb.db');
 export default function RateMovie({ navigation, route }) {
     const { movieForRating } = route.params;
     const [movie, setMovie] = useState('');
-    const [movieWithRating, setMovieWithRating] = useState('');
+    const [movieWithRating, setMovieWithRating] = useState([]);
+    const [ratingsItem, setRatingsItem] = useState(movieForRating);
+    const [ratingsList, setRatingsList] = useState([]);
 
     //Stars for rating
     const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
@@ -26,6 +28,12 @@ export default function RateMovie({ navigation, route }) {
     console.log(defaultRating);
     console.log(movieForRating);
 
+    useEffect(() => {
+    db.transaction(tx => {
+      tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating);');
+    }, null, null);
+    }, []);
+
     /*db.transaction(tx => {
       tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',
         [item.original_title, item.poster_path, item.release_date, movieWithRating.rating]);
@@ -36,7 +44,7 @@ export default function RateMovie({ navigation, route }) {
     const updateRatingsList = () => {
     db.transaction(tx => {
       tx.executeSql('select * from ratings;', [], (_, { rows }) =>
-        setItemList(rows._array)
+        setRatingsList(rows._array)
       );
     }, null, null);
     }
@@ -44,23 +52,19 @@ export default function RateMovie({ navigation, route }) {
     const CustomRatingBar = () => {
     return (
         <View style={styles.customRatingBarStyle}>
-            {
-            maxRating.map((item, key) => {
                 return (
                 <TouchableOpacity
                 activeOpacity={0.7}
-                key={item}
-                onPress={() => setDefaultRating(item)}
+                key={ratingsItem}
+                onPress={() => setDefaultRating(ratingsItem)}
                 >
                     <Image 
                     style={styles.starImgStyle}
-                    source={item <= defaultRating ? {uri: starImgFilled} : {uri: starImgCorner}}
+                    source={ratingsItem <= defaultRating ? {uri: starImgFilled} : {uri: starImgCorner}}
                     />
 
                 </TouchableOpacity>
                 )
-            })
-            }
         </View>
         )
     }
@@ -69,7 +73,7 @@ export default function RateMovie({ navigation, route }) {
     return (
       <View style={styles.ratingContainer}>
         {/* Add a rating */}
-          <Image source={{uri: "https://image.tmdb.org/t/p/w500" + movieForRating}} />
+          <Image source={{uri: "https://image.tmdb.org/t/p/w500" + movieForRating.poster_path}} />
           <CustomRatingBar />
           <Button onPress={rateMovie} title="Save Rating" />
       </View>
@@ -77,82 +81,32 @@ export default function RateMovie({ navigation, route }) {
   }
 
     return (
-        <View>
+        <View style={styles.container}>
             <RatingPopup />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
+    container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  //PopUp Styles
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 40,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
 
-  //Button Styles (addRating & saveRating)
-  buttonpopup: {
-    borderRadius: 20,
-    padding: 12,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#2196F3",
-    borderColor: 'transparent',
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
+    ratingContainer: {
+        marginTop: 50,
+    },
 
-  //Text Style for saveRating text
-  textStylePopup: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-
-  //AddRating button container
-  addRatingButtonContainer: {
-    alignItems: 'center',
-    marginTop: 5,
-  },
-
-  ratingContainer: {
-    marginTop: 50,
-  },
-
-  customRatingBarStyle: {
-    justifyContent: "center",
-    flexDirection: "row",
-    marginTop: 30,
-  },
-  starImgStyle: {
-    width: 40,
-    height: 40,
-    resizeMode: "cover",
-  },
+    customRatingBarStyle: {
+        justifyContent: "center",
+        flexDirection: "row",
+        marginTop: 30,
+    },
+    starImgStyle: {
+        width: 40,
+        height: 40,
+        resizeMode: "cover",
+    },
 });

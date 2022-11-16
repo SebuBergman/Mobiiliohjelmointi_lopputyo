@@ -7,8 +7,9 @@ import { Ionicons } from '@expo/vector-icons';
 import SearchScreen from './src/components/search';
 import HomeScreen from './src/components/mainpage';
 import Watchlist from './src/components/watchlist';
-import RateMovie from './src/components/ratemovie';
+import Ratings from './src/components/ratings';
 import ProfileScreen from './src/components/profile';
+import RateMovie from './src/components/ratemovie';
 
 const screenOptions = ({ route }) => ({
   headerShown: false,
@@ -50,7 +51,7 @@ const YouPageStackScreen = () => (
   <YouStack.Navigator>
     <YouStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'You', headerShown: false }} />
     <HomeStack.Screen name="Watchlist" component={Watchlist} />
-    <HomeStack.Screen name="Ratings" component={Watchlist} />
+    <HomeStack.Screen name="Ratings" component={Ratings} />
   </YouStack.Navigator>
 );
 
