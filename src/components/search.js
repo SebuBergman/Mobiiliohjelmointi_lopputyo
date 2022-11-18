@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
 
@@ -9,7 +9,7 @@ const db = SQLite.openDatabase('moviedb.db');
 export default function SearchScreen({ navigation }) {
   const [keyword, setKeyword] = useState();
   const [searchResults, setSearchResults] = useState([]);
-  const [movieForRating, setMovieForRating] = useState('');
+  /*const [movieForRating, setMovieForRating] = useState('')*/
   const [watchlist, setWatchlist] = useState([]);
   const [ratingsList, setRatingsList] = useState([]);
 
@@ -29,7 +29,7 @@ export default function SearchScreen({ navigation }) {
       tx.executeSql('create table if not exists watchlist (id integer primary key not null, title text, poster text, release_date text);');
     }, null, updateWatchlist);
     db.transaction(tx => {
-      tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating);');
+      tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating integer);');
     }, null, null);
   }, []);
 
@@ -105,26 +105,17 @@ export default function SearchScreen({ navigation }) {
     )
   }
 
-  const saveMovie = (item) => {
+  const saveMovie = (movieDetails) => {
     db.transaction(tx => {
       tx.executeSql('insert into watchlist (title, poster, release_date) values (?, ?, ?);',
-        [item.original_title, item.poster_path, item.release_date]);
+        [movieDetails.original_title, movieDetails.poster_path, movieDetails.release_date]);
     }, errorAlertSave, updateWatchlist);
   }
 
-  const rateMovie = (item) => {
-    console.log(item);
-
-    /*db.transaction(tx => {
-      tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',
-        [item.original_title, item.poster_path, item.release_date, movieWithRating.rating]);
-    }, errorAlertSave, updateRatingsList);*/
-    //setModalVisible(!modalVisible);
-    setMovieForRating(item);
-
-    if (movieForRating != null) {
+  const rateMovie = (movieDetails) => {
+    if (movieDetails != null) {
       navigation.navigate('RateMovie', {
-                movieForRating,
+                movieDetails,
             });
     } else {
       alert('Please choose a movie to rate!');
@@ -136,7 +127,6 @@ export default function SearchScreen({ navigation }) {
       tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
         setWatchlist(rows._array)
       );
-      console.log(watchlist);
     }, null, null);
   }
 
@@ -157,7 +147,7 @@ export default function SearchScreen({ navigation }) {
     .then(res => res.json())
     .then(data => {
       setSearchResults(data.results);
-      console.log(searchResults);
+      //console.log(searchResults);
     })
     .catch(err => console.error(err));
   }
@@ -168,24 +158,24 @@ export default function SearchScreen({ navigation }) {
           <Input placeholder="Input" onChangeText={text => setKeyword(text) } />
           <Button title="Search" type="outline" onPress={getMovie} ></Button>
         </View>
-        <View style={styles.searchResultsContainer}>
+        <ScrollView style={styles.searchResultsContainer}>
           {
-            searchResults.map((item, i) => (
+            searchResults.map((movieDetails, i) => (
               <ListItem key={i} bottomDivider>
-                <Avatar size={"large"} source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster_path}} />
+                <Image source={{uri: "https://image.tmdb.org/t/p/w500" + movieDetails.poster_path}} style={styles.moviePosterArt} />
                 <ListItem.Content>
-                  <ListItem.Title>{item.original_title}</ListItem.Title>
-                  <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
+                  <ListItem.Title>{movieDetails.original_title}</ListItem.Title>
+                  <ListItem.Subtitle>{movieDetails.release_date}</ListItem.Subtitle>
                   <View style={styles.buttonContainer}>
-                    <Button title="Add to watchlist" type="outline" onPress={() => saveMovie(item)}></Button>
-                    <Button title="Rate Movie" type="outline" onPress={() => rateMovie(item)}></Button>
+                    <Button title="Add to Watchlist" type="outline" onPress={() => saveMovie(movieDetails)}></Button>
+                    <Button title="Rate" type="outline" onPress={() => {rateMovie(movieDetails)}}></Button>
                     {/* <RatingPopup /> */}
                   </View>
                 </ListItem.Content>
               </ListItem>
             ))
-          }
-        </View>
+          } 
+        </ScrollView>
       </View>
   );
 
@@ -200,7 +190,6 @@ const styles = StyleSheet.create({
   },
   searchResultsContainer: {
     marginTop: 10,
-    height: 200,
   },
   customRatingBarStyle: {
     justifyContent: "center",
@@ -217,29 +206,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
-  /*
-  //PopUp Styles
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 40,
+  moviePosterArt: {
+    width: 100,
+    height: 150,
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },*/
 
   //Button Styles (addRating & saveRating)
   buttonpopup: {

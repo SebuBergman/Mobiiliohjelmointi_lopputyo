@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
+import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
@@ -22,11 +23,12 @@ export default function Ratings({ navigation }) {
     const [defaultRating, setDefaultRating] = useState(2);
     const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
 
-    useEffect(() => {
-    db.transaction(tx => {
-      tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating);');
-    }, null, null);
-    }, []);
+    useFocusEffect(
+    React.useCallback(() => {
+      db.transaction(tx => {
+      tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating integer);');
+    }, null, updateRatingsList);
+    }, []));
 
     const updateRatingsList = () => {
     db.transaction(tx => {
@@ -34,6 +36,7 @@ export default function Ratings({ navigation }) {
         setRatingsList(rows._array)
       );
     }, null, null);
+    console.log(ratingsList);
     }
 
     const deleteRatingItem = (id) => {
@@ -52,12 +55,14 @@ export default function Ratings({ navigation }) {
         {
           ratingsList.map((item, i) => (
             <ListItem key={i} bottomDivider>
-              <Avatar size={"large"} source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} />
+              <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} style={styles.moviePosterArt} />
               <ListItem.Content>
                 <ListItem.Title>{item.title}</ListItem.Title>
                 <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
+                <ListItem.Subtitle><Image source={require('../assets/star_filled.png')}
+                style={styles.tinyStarLogo} /> {item.rating}</ListItem.Subtitle>
                 <View style={styles.buttonContainer}>
-                  <Button title="Watched" type="outline" onPress={() => deleteRatingItem(item.id)}></Button>
+                  <Button title="Delete Rating" type="outline" onPress={() => deleteRatingItem(item.id)}></Button>
                 </View>
               </ListItem.Content>
             </ListItem>
@@ -121,8 +126,7 @@ const styles = StyleSheet.create({
   },
 
   //AddRating button container
-  addRatingButtonContainer: {
-    alignItems: 'center',
+  buttonContainer: {
     marginTop: 5,
   },
 
@@ -139,5 +143,15 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     resizeMode: "cover",
+  },
+
+  tinyStarLogo: {
+    width: 14,
+    height: 14,
+  },
+
+  moviePosterArt: {
+    width: 100,
+    height: 150,
   },
 });

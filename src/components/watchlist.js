@@ -21,9 +21,7 @@ export default function Watchlist({ navigation, route }) {
       tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
         setWatchlist(rows._array)
       );
-      console.log(watchlist);
     }, null, null);
-   
   }
 
   const deleteWatchlistItem = (id) => {
