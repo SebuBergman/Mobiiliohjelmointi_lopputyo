@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
 import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
@@ -16,9 +16,6 @@ export default function Ratings({ navigation }) {
     const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
     const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
 
-    // Popup modalVisible
-    const [modalVisible, setModalVisible] = useState(false);
-
     //Rating PopUp consts
     const [defaultRating, setDefaultRating] = useState(2);
     const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
@@ -26,8 +23,11 @@ export default function Ratings({ navigation }) {
     useFocusEffect(
     React.useCallback(() => {
       db.transaction(tx => {
-      tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating integer);');
-    }, null, updateRatingsList);
+      tx.executeSql('select * from ratings;', [], (_, { rows }) =>
+        setRatingsList(rows._array)
+      );
+    }, null, null);
+    console.log(ratingsList);
     }, []));
 
     const updateRatingsList = () => {
@@ -36,7 +36,6 @@ export default function Ratings({ navigation }) {
         setRatingsList(rows._array)
       );
     }, null, null);
-    console.log(ratingsList);
     }
 
     const deleteRatingItem = (id) => {
@@ -51,7 +50,7 @@ export default function Ratings({ navigation }) {
 
   return (
     <View>
-      <View style={styles.searchResultsContainer}>
+      <ScrollView style={styles.searchResultsContainer}>
         {
           ratingsList.map((item, i) => (
             <ListItem key={i} bottomDivider>
@@ -62,13 +61,13 @@ export default function Ratings({ navigation }) {
                 <ListItem.Subtitle><Image source={require('../assets/star_filled.png')}
                 style={styles.tinyStarLogo} /> {item.rating}</ListItem.Subtitle>
                 <View style={styles.buttonContainer}>
-                  <Button title="Delete Rating" type="outline" onPress={() => deleteRatingItem(item.id)}></Button>
+                  <Button title="Delete" type="outline" onPress={() => deleteRatingItem(item.id)}></Button>
                 </View>
               </ListItem.Content>
             </ListItem>
           ))
         }
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -81,43 +80,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  //PopUp Styles
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 40,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-
-  //Button Styles (addRating & saveRating)
-  buttonpopup: {
-    borderRadius: 20,
-    padding: 12,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#2196F3",
-    borderColor: 'transparent',
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-
   //Text Style for saveRating text
   textStylePopup: {
     color: "white",
@@ -127,7 +89,7 @@ const styles = StyleSheet.create({
 
   //AddRating button container
   buttonContainer: {
-    marginTop: 5,
+    marginTop: 10,
   },
 
   ratingContainer: {

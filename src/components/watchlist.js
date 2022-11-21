@@ -1,7 +1,8 @@
 import React from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
+import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
@@ -10,11 +11,14 @@ export default function Watchlist({ navigation, route }) {
 
   const [watchlist, setWatchlist] = useState([]);
 
-  useEffect(() => {
-    db.transaction(tx => {
-      tx.executeSql('create table if not exists watchlist (id integer primary key not null, title text, poster text, release_date text);');
-    }, null, updateWatchlist);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      db.transaction(tx => {
+      tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
+        setWatchlist(rows._array)
+      );
+      }, null, null);
+    }, []));
 
   const updateWatchlist = () => {
     db.transaction(tx => {
@@ -36,11 +40,11 @@ export default function Watchlist({ navigation, route }) {
 
   return (
     <View>
-      <View style={styles.searchResultsContainer}>
+      <ScrollView style={styles.searchResultsContainer}>
         {
           watchlist.map((item, i) => (
             <ListItem key={i} bottomDivider>
-              <Avatar size={"large"} source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} />
+              <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} style={styles.moviePosterArt} />
               <ListItem.Content>
                 <ListItem.Title>{item.title}</ListItem.Title>
                 <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
@@ -51,7 +55,7 @@ export default function Watchlist({ navigation, route }) {
             </ListItem>
           ))
         }
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -62,5 +66,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  moviePosterArt: {
+    width: 100,
+    height: 150,
   },
 });

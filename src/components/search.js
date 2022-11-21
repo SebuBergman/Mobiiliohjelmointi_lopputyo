@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView, Alert } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
 
@@ -23,15 +23,6 @@ export default function SearchScreen({ navigation }) {
   //Rating PopUp consts
   const [defaultRating, setDefaultRating] = useState(2);
   const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
-
-  useEffect(() => {
-    db.transaction(tx => {
-      tx.executeSql('create table if not exists watchlist (id integer primary key not null, title text, poster text, release_date text);');
-    }, null, updateWatchlist);
-    db.transaction(tx => {
-      tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating integer);');
-    }, null, null);
-  }, []);
 
   const CustomRatingBar = () => {
     return (
@@ -57,59 +48,24 @@ export default function SearchScreen({ navigation }) {
     )
   }
 
-  const RatingPopup = () => {
-    return (
-      <View>
-        <View>
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}>
-            <Pressable style={styles.outsideModal}
-              onPress={(event) => { if (event.target == event.currentTarget) { 
-              setModalVisible(false); } }} >
-
-              {/* Add a new rating*/}
-              <View style={styles.modal}>
-                  <View style={styles.modalHeader}>
-                      <View style={styles.modalHeaderContent}>
-                        <Text>Add players</Text>
-                      </View>
-                      <TouchableOpacity onPress={() => setModalVisible(false)}>
-                          <Text style={styles.modalHeaderCloseText}>X</Text>
-                      </TouchableOpacity>
-                  </View>
-              <View style={styles.modalContent}>
-              {/*<View style={styles.ratingsContainer}>*/}
-                <CustomRatingBar />
-                <Pressable
-                  style={[styles.buttonpopup, styles.buttonClose]}
-                  onPress={rateMovie} >
-                <Text style={styles.textStyle}>Save player</Text>
-                </Pressable>
-              </View>
-            </View>
-            </Pressable>
-          </Modal>
-        </View>
-        <View style={styles.addRatingButtonContainer}>
-          <Pressable
-              title="Add Rating"
-              style={[styles.buttonpopup, styles.buttonOpen]}
-              onPress={() => setModalVisible(true)} >
-            <Text style={styles.textStylePopup}>Add rating</Text>
-          </Pressable>
-        </View>
-      </View>
-    )
-  }
-
   const saveMovie = (movieDetails) => {
     db.transaction(tx => {
-      tx.executeSql('insert into watchlist (title, poster, release_date) values (?, ?, ?);',
-        [movieDetails.original_title, movieDetails.poster_path, movieDetails.release_date]);
-    }, errorAlertSave, updateWatchlist);
+    tx.executeSql(`Select * FROM watchlist WHERE title="${movieDetails.original_title}";`,
+    [],
+    (tx, results) => {
+      //console.log(results);
+      console.log(results.rows.length);
+      if (results.rows.length == 0) {
+        db.transaction(tx => {
+          tx.executeSql('insert into watchlist (title, poster, release_date) values (?, ?, ?);',
+          [movieDetails.original_title, movieDetails.poster_path, movieDetails.release_date]);
+          Alert.alert('Added to watchlist');
+        }, errorAlertSave, updateWatchlist);
+      } else {
+        Alert.alert('Movie already in watchlist');
+      }
+    });
+  });
   }
 
   const rateMovie = (movieDetails) => {
@@ -140,6 +96,10 @@ export default function SearchScreen({ navigation }) {
 
   const errorAlertSave = () => {
     Alert.alert('Something went wrong saving');
+  }
+
+  const Watchlisted = () => {
+  Alert.alert('Added to watchlist');
   }
   
   const getMovie = () => {

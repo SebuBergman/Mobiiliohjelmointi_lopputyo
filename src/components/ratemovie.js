@@ -28,7 +28,6 @@ export default function RateMovie({ navigation, route }) {
   const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
 
   const rateMovie = () => {
-  
   db.transaction(tx => {
     tx.executeSql(`Select * FROM ratings WHERE title="${movieDetails.original_title}";`,
     [],
@@ -36,26 +35,17 @@ export default function RateMovie({ navigation, route }) {
       //console.log(results);
       console.log(results.rows.length);
       if (results.rows.length == 0) {
-        rateTheMovie();
+        db.transaction(tx => {
+          tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',
+            [movieDetails.original_title, movieDetails.poster_path, movieDetails.release_date, defaultRating]);
+        }, errorAlertSave, AlertSave);
+
+        navigation.goBack();
       } else {
         Alert.alert('Movie already rated');
-        navigation.goBack();
       }
     });
   });
-  /*
-  db.transaction(tx => {
-    tx.executeSql(`SELECT EXISTS(Select 1 FROM ratings WHERE title="${movieDetails.original_title}");`);
-  }, rateTheMovie, AlertFound);*/
-  }
-
-  const rateTheMovie = () => {
-    db.transaction(tx => {
-    tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',
-      [movieDetails.original_title, movieDetails.poster_path, movieDetails.release_date, defaultRating]);
-  }, errorAlertSave, AlertSave);
-
-  navigation.goBack();
   }
 
   const errorAlertSave = () => {
@@ -65,12 +55,6 @@ export default function RateMovie({ navigation, route }) {
   const AlertSave = () => {
   Alert.alert('Rating saved');
   }
-
-  useEffect(() => {
-  db.transaction(tx => {
-    tx.executeSql('create table if not exists ratings (id integer primary key not null, title text, poster text, release_date text, rating);');
-  }, null, null);
-  }, []);
 
   const CustomRatingBar = () => {
   return (
@@ -98,15 +82,18 @@ export default function RateMovie({ navigation, route }) {
 
   const RatingPopup = () => {
   return (
-    <View style={styles.ratingContainer}>
-      {/* Add a rating */}
-        <Avatar size={"large"} source={{uri: "https://image.tmdb.org/t/p/w500" + movieDetails.poster_path}} />
-        <Text>{movieDetails.original_title}</Text>
-        <Text>{movieDetails.release_date}</Text>
-        <View>
-          <CustomRatingBar />
+    <View>
+      <Image source={{uri: "https://image.tmdb.org/t/p/w500" + movieDetails.poster_path}} style={styles.moviePosterArt} />
+      <View style={styles.textContainer}>
+        <Text style={styles.movieTitleHeading}>{movieDetails.original_title}</Text>
+        <Text style={styles.releaseDateText}>{movieDetails.release_date}</Text>
+      </View>
+      <View>
+        <CustomRatingBar />
+        <View style={styles.buttonContainer}>
           <Button onPress={rateMovie} title="Save Rating" />
         </View>
+      </View>
     </View>
   )
   }
@@ -120,24 +107,42 @@ export default function RateMovie({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-  flex: 1,
-  backgroundColor: '#fff',
-  alignItems: 'center',
-  justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  ratingContainer: {
-      marginTop: 50,
+  moviePosterArt: {
+    width: 200,
+    height: 300,
+  },
+
+  textContainer: {
+    width: 200,
+  },
+
+  movieTitleHeading: {
+    fontSize: 20,
+  },
+
+  releaseDateText: {
+    fontSize: 15,
+  },
+
+  buttonContainer: {
+    marginTop: 10,
   },
 
   customRatingBarStyle: {
-      justifyContent: "center",
-      flexDirection: "row",
-      marginTop: 30,
+    justifyContent: "center",
+    flexDirection: "row",
+    marginTop: 30,
   },
+
   starImgStyle: {
-      width: 40,
-      height: 40,
-      resizeMode: "cover",
+    width: 40,
+    height: 40,
+    resizeMode: "cover",
   },
 });
