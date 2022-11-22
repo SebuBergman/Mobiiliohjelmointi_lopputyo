@@ -60,7 +60,7 @@ export default function SearchScreen({ navigation }) {
           tx.executeSql('insert into watchlist (title, poster, release_date) values (?, ?, ?);',
           [movieDetails.original_title, movieDetails.poster_path, movieDetails.release_date]);
           Alert.alert('Added to watchlist');
-        }, errorAlertSave, updateWatchlist);
+        }, errorAlertSave, null);
       } else {
         Alert.alert('Movie already in watchlist');
       }
@@ -78,28 +78,8 @@ export default function SearchScreen({ navigation }) {
     }
   }
 
-  const updateWatchlist = () => {
-    db.transaction(tx => {
-      tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
-        setWatchlist(rows._array)
-      );
-    }, null, null);
-  }
-
-  const updateRatingsList = () => {
-    db.transaction(tx => {
-      tx.executeSql('select * from ratings;', [], (_, { rows }) =>
-        setRatingsList(rows._array)
-      );
-    }, null, null);
-  }
-
   const errorAlertSave = () => {
     Alert.alert('Something went wrong saving');
-  }
-
-  const Watchlisted = () => {
-  Alert.alert('Added to watchlist');
   }
   
   const getMovie = () => {

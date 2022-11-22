@@ -18,26 +18,24 @@ export default function ProfileScreen({ navigation, route }) {
   useFocusEffect(
     React.useCallback(() => {
       db.transaction(tx => {
-      tx.executeSql('select * from profile;', [], (_, { rows }) =>
-        setProfileList(rows._array)
-      );
-    }, null, null);
-
-    console.log(profileList);
-
-    //setProfileName(profileList[0].profilename);
-
+        tx.executeSql('select * from profile;', [], (_, { rows }) =>
+          setProfileList(rows._array)
+        );
+      }, null, null);
+    
     db.transaction(tx => {
-      tx.executeSql(`Select profilename FROM profile WHERE id="1";`,
+      tx.executeSql(`Select * FROM profile WHERE id="1";`,
       [],
       (tx, results) => {
-        console.log("results length:");
-        console.log(results.rows.length);
+        console.log("results profiledone?:");
+        console.log(results.rows._array[0].profilename);
         if (results.rows.length == 0) {
           setModalVisible(true);
+        } else {
+          setProfileName(results.rows._array[0].profilename);
         }
       });
-    });
+      });
     }, []));
 
   const updateProfile = () => {
@@ -50,24 +48,24 @@ export default function ProfileScreen({ navigation, route }) {
 
   const addProfileName = () => {
     db.transaction(tx => {
-    tx.executeSql(`Select * FROM profile WHERE profilename="${profileName}";`,
+    tx.executeSql(`Select profilename FROM profile WHERE id="1";`,
     [],
     (tx, results) => {
-      console.log("results name:");
+      console.log("Rows addProfile:");
       console.log(results.rows);
-      if (results.rows === profileName) {
+      if (results.rows.length == 0) {
         db.transaction(tx => {
-        tx.executeSql('UPDATE profile SET profilename = "?" WHERE id = 1;',
-          [profileName]);
-      }, null, updateProfile);
+          tx.executeSql('insert into profile (profilename, watchlisted, ratings) values (?, ?, ?);',
+            [profileName, 0, 0]);
+        }, null, null);
       } else {
         db.transaction(tx => {
-        tx.executeSql('insert into profile (profilename, watchlisted, ratings) values (?, ?, ?);',
-          [profileName, 0, 0]);
-      }, null, updateProfile);
+          tx.executeSql('UPDATE profile SET profilename=? WHERE id=1;',
+            [profileName]);
+        }, null, null);
       }
     });
-    });
+    }, null, updateProfile);
     setModalVisible(!modalVisible);
   }
 
@@ -92,6 +90,8 @@ export default function ProfileScreen({ navigation, route }) {
       <View style={styles.container}>
         <Button onPress={() => navigation.push('Watchlist')} title="Watchlist" />
         <Button onPress={() => navigation.push('Ratings')} title="Ratings" />
+
+        {/* Popup for name change */}
         <View style={styles.modalView}>
           <Modal
               animationType="fade"
@@ -99,10 +99,10 @@ export default function ProfileScreen({ navigation, route }) {
               visible={modalVisible}
               onRequestClose={() => setModalVisible(false)}>
               <Pressable style={styles.outsideModal}
-              onPress={(event) => { if (event.target == event.currentTarget) { 
-                  setModalVisible(false); } }} >
-
-                  {/* Add a new player */}
+                onPress={(event) => { if (event.target == event.currentTarget) { 
+                  setModalVisible(false); }
+                }} >
+                  {/* Add a profilename */}
                   <View style={styles.modal}>
                       <View style={styles.modalHeader}>
                           <View style={styles.modalHeaderContent}>
@@ -124,8 +124,8 @@ export default function ProfileScreen({ navigation, route }) {
                   </View>
               </Pressable>
           </Modal>
-          <Button title="Add to Watchlist" type="outline" onPress={() => setModalVisible(true)}></Button>
         </View>
+
       </View>
     </View>
   );

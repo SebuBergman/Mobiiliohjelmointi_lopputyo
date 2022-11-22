@@ -39,7 +39,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.container}>
         <Text>Home screen</Text>
         <Text>More stuff added soon</Text>
-        {/*<Button title="Drop tables" type="outline" onPress={() => DeleteTables()}></Button>*/}
+        <Button title="Drop tables" type="outline" onPress={() => DeleteTables()}></Button>
       </View>
   );
 }
