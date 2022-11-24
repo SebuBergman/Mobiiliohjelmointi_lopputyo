@@ -40,7 +40,7 @@ export default function Watchlist({ navigation, route }) {
 
   return (
     <View>
-      <ScrollView style={styles.searchResultsContainer}>
+      <ScrollView>
         {
           watchlist.map((item, i) => (
             <ListItem key={i} bottomDivider>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
 
   moviePosterArt: {
-    width: 100,
-    height: 150,
+    width: 150,
+    height: 225,
   },
 });

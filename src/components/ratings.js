@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
 
   moviePosterArt: {
-    width: 100,
-    height: 150,
+    width: 150,
+    height: 225,
   },
 });
