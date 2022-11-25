@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from 'react';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView, TextInput } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating, Icon } from 'react-native-elements';
@@ -11,6 +11,9 @@ export default function ProfileScreen({ navigation, route }) {
   const [profileName, setProfileName] = useState('Set profile name');
   const [profileNameTemp, setProfileNameTemp] = useState('');
   const [profileList, setProfileList] = useState([]);
+  const [ratingsAmount, setRatingsAmount] = useState([]);
+  const [watchlistAmount, setWatchlistAmount] = useState([]);
+  const [watchlistedMovies, setWatchlistedMovies] = useState([]);
 
   // Popup modalVisible
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,7 +38,33 @@ export default function ProfileScreen({ navigation, route }) {
           setProfileName(results.rows._array[0].profilename);
         }
       });
+    });
+
+    db.transaction(tx => {
+      tx.executeSql(`Select * FROM ratings;`,
+      [],
+      (tx, results) => {
+        console.log("ratings amount");
+        console.log(results.rows.length);
+        setRatingsAmount(results.rows.length);
       });
+    });
+
+    db.transaction(tx => {
+      tx.executeSql(`Select * FROM watchlist;`,
+      [],
+      (tx, results) => {
+        console.log("watchlist amount");
+        console.log(results.rows.length);
+        setWatchlistAmount(results.rows.length);
+      });
+    });
+
+    db.transaction(tx => {
+      tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
+        setWatchlistedMovies(rows._array)
+      );
+      }, null, null);
     }, []));
 
   const updateProfile = () => {
@@ -87,11 +116,7 @@ export default function ProfileScreen({ navigation, route }) {
           onPress={() => setModalVisible(true)}
         />
       </View>
-      <View style={styles.container}>
-        <Button onPress={() => navigation.push('Watchlist')} title="Watchlist" />
-        <Button onPress={() => navigation.push('Ratings')} title="Ratings" />
-
-        {/* Popup for name change */}
+      {/* Popup for name change */}
         <View style={styles.modalView}>
           <Modal
               animationType="fade"
@@ -125,7 +150,30 @@ export default function ProfileScreen({ navigation, route }) {
               </Pressable>
           </Modal>
         </View>
-
+        <View>
+          <Button onPress={() => navigation.push('Ratings')} title="Ratings" />
+          <Text>{ratingsAmount}</Text>
+        </View>
+        <View style={styles.watchlistContainer}>
+          <Text style={styles.normalText}>Your Watchlist:</Text>
+          <Button title="See all" type="outline" onPress={() => navigation.navigate('Watchlist')}></Button>
+          <ScrollView style={styles.watchlistedContainer} horizontal={true}>
+            {
+              watchlistedMovies.map((item, i) => (
+                <ListItem key={i} bottomDivider>
+                  <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} style={styles.moviePosterArt} />
+                <ListItem.Content>
+                  <ListItem.Title>{item.title}</ListItem.Title>
+                  <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
+                  <View style={styles.buttonContainer}>
+                    <Button title="Watched" type="outline" onPress={() => deleteWatchlistItem(item.id)}></Button>
+                  </View>
+                </ListItem.Content>
+              </ListItem>
+              ))
+            }
+          </ScrollView>
+        <Button onPress={() => navigation.push('Watchlist')} title="Watchlist" />
       </View>
     </View>
   );
@@ -219,4 +267,34 @@ const styles = StyleSheet.create({
       right: 20,
       top: 50,
     },
+
+  welcomeContainer: {
+    marginTop: 100,
+  },
+  
+  watchlistContainer: {
+    textAlign: 'center',
+  },
+
+  heading: {
+    fontSize: 20,
+    marginBottom: 20,
+  },
+
+  normalText: {
+    fontSize: 19,
+  },
+
+  popularMoviesContainer: {
+    width: 350,
+  },
+
+  watchlistedContainer: {
+    width: 350,
+  },
+
+  moviePosterArt: {
+    width: 120,
+    height: 175,
+  },
 });

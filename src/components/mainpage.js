@@ -9,7 +9,6 @@ const db = SQLite.openDatabase('moviedb.db');
 
 export default function HomeScreen({ navigation }) {
   const [popularMovies, setPopularMovies] = useState([]);
-
   const [watchlistedMovies, setWatchlistedMovies] = useState([]);
 
   useFocusEffect(
