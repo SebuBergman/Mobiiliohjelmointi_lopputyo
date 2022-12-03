@@ -93,19 +93,19 @@ export default function SearchScreen({ navigation }) {
   }
 
   return (
-      <View>
+      <View style={{backgroundColor: '#191919'}}>
         <View style={styles.searchContainer}>
-          <Input placeholder="Input" onChangeText={text => setKeyword(text) } />
+          <Input placeholder="Input" onChangeText={text => setKeyword(text)} inputStyle={{color: 'white'}} color="white" />
           <Button title="Search" type="outline" onPress={getMovie} ></Button>
         </View>
         <ScrollView style={styles.searchResultsContainer}>
           {
             searchResults.map((movieDetails, i) => (
-              <ListItem key={i} bottomDivider>
+              <ListItem key={i} bottomDivider containerStyle={{backgroundColor: '#191919'}}>
                 <Image source={{uri: "https://image.tmdb.org/t/p/w500" + movieDetails.poster_path}} style={styles.moviePosterArt} />
                 <ListItem.Content>
-                  <ListItem.Title>{movieDetails.original_title}</ListItem.Title>
-                  <ListItem.Subtitle>{movieDetails.release_date}</ListItem.Subtitle>
+                  <ListItem.Title style={{ color: 'white'}}>{movieDetails.original_title}</ListItem.Title>
+                  <ListItem.Subtitle style={{ color: 'white'}}>{movieDetails.release_date}</ListItem.Subtitle>
                   <View style={styles.buttonContainer}>
                     <Button title="Add to Watchlist" type="outline" onPress={() => saveMovie(movieDetails)}></Button>
                     <Button title="Rate" type="outline" onPress={() => {rateMovie(movieDetails)}}></Button>
@@ -128,7 +128,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 110,
   },
+
   searchResultsContainer: {
+    backgroundColor: '#191919',
     marginTop: 10,
   },
   customRatingBarStyle: {
@@ -144,6 +146,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     justifyContent: "center",
     flexDirection: "row",
+    paddingTop: 10,
   },
 
   moviePosterArt: {

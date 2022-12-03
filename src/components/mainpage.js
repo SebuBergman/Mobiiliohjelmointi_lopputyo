@@ -42,43 +42,23 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.container}>
         <View style={styles.welcomeContainer}>
           <Text style={styles.heading}>Welcome to Pixel Ratings</Text>
-          <Text style={styles.normalText}>Popular movies:</Text>
-          <ScrollView style={styles.popularMoviesContainer} horizontal={true}>
-          {
-            popularMovies.map((item, i) => (
-              <ListItem key={i} bottomDivider>
-                <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster_path}} style={styles.moviePosterArt} />
-                <ListItem.Content>
-                  <ListItem.Title>{item.original_title}</ListItem.Title>
-                  <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
-                  <View style={styles.buttonContainer}>
-                  </View>
-                </ListItem.Content>
-              </ListItem>
-            ))
-          }
-        </ScrollView>
-        <View style={styles.watchlistContainer}>
-          <View style={styles.fromyourwatchlist}>
-          <Text style={styles.normalText}>From your Watchlist:</Text>
-          <Button title="See all" type="outline" onPress={() => navigation.navigate('Watchlist')}></Button>
+          <View style={styles.popularContainer}>
+            <Text style={styles.headingText}>Featured today:</Text>
+            <View style={styles.centerScrllView}>
+              <ScrollView style={styles.popularScrllViewContainer} horizontal={true}>
+              {
+                popularMovies.map((item, i) => (
+                  <ListItem key={i} bottomDivider containerStyle={{backgroundColor: "#212121"}}>
+                    <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster_path}} style={styles.moviePosterArt} />
+                    <ListItem.Content>
+                      <ListItem.Title style={{ color: 'white' }}>{item.original_title}</ListItem.Title>
+                      <ListItem.Subtitle style={{ color: 'white' }}>{item.release_date}</ListItem.Subtitle>
+                    </ListItem.Content>
+                  </ListItem>
+                ))
+              }
+              </ScrollView>
           </View>
-          <ScrollView style={styles.watchlistedContainer} horizontal={true}>
-            {
-              watchlistedMovies.map((item, i) => (
-                <ListItem key={i} bottomDivider>
-                  <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} style={styles.moviePosterArt} />
-                <ListItem.Content>
-                  <ListItem.Title>{item.title}</ListItem.Title>
-                  <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
-                  <View style={styles.buttonContainer}>
-                    <Button title="Watched" type="outline" onPress={() => deleteWatchlistItem(item.id)}></Button>
-                  </View>
-                </ListItem.Content>
-              </ListItem>
-              ))
-            }
-          </ScrollView>
         </View>
       </View>
     </View>
@@ -88,38 +68,57 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#191919',
     textAlign: 'center',
+  },
+
+  normalText:  {
+    color: 'white',
+    fontSize: 15,
+  },
+
+  headingText: {
+    color: 'white',
+    fontSize: 20,
+    paddingLeft: 10,
+    color: "#f7c518",
+    fontWeight: "bold",
   },
 
   welcomeContainer: {
     marginTop: 100,
   },
-  
-  watchlistContainer: {
-    marginTop: 30,
-    textAlign: 'center',
-  },
-
-  fromyourwatchlist: {
-    flexDirection: 'row',
-  },
 
   heading: {
+    color: 'white',
     fontSize: 20,
+    fontWeight: "bold",
     marginBottom: 20,
+    paddingLeft: 10,
   },
 
-  normalText: {
-    fontSize: 19,
+  popularContainer: {
+    backgroundColor: "#212121",
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    paddingTop: 10,
+    paddingBottom: 20,
   },
 
-  popularMoviesContainer: {
-    width: 350,
+  centerScrllView: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
-  watchlistedContainer: {
-    width: 350,
+  popularScrllViewContainer: {
+    width: 340,
+    backgroundColor: "#212121",
   },
 
   moviePosterArt: {

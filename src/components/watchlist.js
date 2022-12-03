@@ -63,7 +63,7 @@ export default function Watchlist({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#191919',
     alignItems: 'center',
     justifyContent: 'center',
   },

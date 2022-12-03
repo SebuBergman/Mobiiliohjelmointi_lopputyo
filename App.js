@@ -42,16 +42,16 @@ const HomeStackScreen = () => (
 
 const SearchStackScreen = () => (
   <SearchStack.Navigator>
-    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search' }}/>
+    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search', headerStyle: {backgroundColor: '#1d1d1d'}, headerTintColor: '#fff'}}/>
     <SearchStack.Screen name="RateMovie" component={RateMovie} />
   </SearchStack.Navigator>
 );
 
 const YouPageStackScreen = () => (
   <YouStack.Navigator>
-    <YouStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'You', headerShown: false }} />
-    <HomeStack.Screen name="Watchlist" component={Watchlist} />
-    <HomeStack.Screen name="Ratings" component={Ratings} />
+    <YouStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'You', headerShown: false}} />
+    <HomeStack.Screen name="Watchlist" component={Watchlist} options={{ headerStyle: {backgroundColor: '#1d1d1d'}, headerTintColor: '#fff'}}/>
+    <HomeStack.Screen name="Ratings" component={Ratings} options={{ headerStyle: {backgroundColor: '#1d1d1d'}, headerTintColor: '#fff'}}/>
   </YouStack.Navigator>
 );
 
@@ -72,11 +72,3 @@ export default function App() {
     
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
