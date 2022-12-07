@@ -82,7 +82,7 @@ export default function RateMovie({ navigation, route }) {
 
   const RatingPopup = () => {
   return (
-    <View>
+    <View >
       <Image source={{uri: "https://image.tmdb.org/t/p/w500" + movieDetails.poster_path}} style={styles.moviePosterArt} />
       <View style={styles.textContainer}>
         <Text style={styles.movieTitleHeading}>{movieDetails.original_title}</Text>
@@ -108,7 +108,7 @@ export default function RateMovie({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#191919',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -124,10 +124,12 @@ const styles = StyleSheet.create({
 
   movieTitleHeading: {
     fontSize: 20,
+    color: 'white',
   },
 
   releaseDateText: {
     fontSize: 15,
+    color: 'white',
   },
 
   buttonContainer: {

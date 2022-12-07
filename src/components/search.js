@@ -93,7 +93,7 @@ export default function SearchScreen({ navigation }) {
   }
 
   return (
-      <View style={{backgroundColor: '#191919'}}>
+      <View style={styles.container}>
         <View style={styles.searchContainer}>
           <Input placeholder="Input" onChangeText={text => setKeyword(text)} inputStyle={{color: 'white'}} color="white" />
           <Button title="Search" type="outline" onPress={getMovie} ></Button>
@@ -123,6 +123,10 @@ export default function SearchScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#191919',
+  },
   searchContainer: {
     marginTop: 10,
     alignItems: "center",

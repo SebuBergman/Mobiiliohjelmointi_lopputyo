@@ -43,11 +43,11 @@ export default function Watchlist({ navigation, route }) {
       <ScrollView>
         {
           watchlist.map((item, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem key={i} bottomDivider containerStyle={{backgroundColor: '#191919'}}>
               <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} style={styles.moviePosterArt} />
               <ListItem.Content>
-                <ListItem.Title>{item.title}</ListItem.Title>
-                <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
+                <ListItem.Title style={{ color: 'white'}}>{item.title}</ListItem.Title>
+                <ListItem.Subtitle style={{ color: 'white'}}>{item.release_date}</ListItem.Subtitle>
                 <View style={styles.buttonContainer}>
                   <Button title="Watched" type="outline" onPress={() => deleteWatchlistItem(item.id)}></Button>
                 </View>
@@ -71,5 +71,9 @@ const styles = StyleSheet.create({
   moviePosterArt: {
     width: 150,
     height: 225,
+  },
+
+  buttonContainer: {
+    paddingTop: 10,
   },
 });

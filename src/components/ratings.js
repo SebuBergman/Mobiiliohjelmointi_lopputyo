@@ -49,16 +49,16 @@ export default function Ratings({ navigation }) {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView style={styles.searchResultsContainer}>
         {
           ratingsList.map((item, i) => (
-            <ListItem key={i} bottomDivider>
+            <ListItem key={i} bottomDivider containerStyle={{backgroundColor: '#191919'}}>
               <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} style={styles.moviePosterArt} />
               <ListItem.Content>
-                <ListItem.Title>{item.title}</ListItem.Title>
-                <ListItem.Subtitle>{item.release_date}</ListItem.Subtitle>
-                <ListItem.Subtitle><Image source={require('../assets/star_filled.png')}
+                <ListItem.Title style={{ color: 'white'}}>{item.title}</ListItem.Title>
+                <ListItem.Subtitle style={{ color: 'white'}}>{item.release_date}</ListItem.Subtitle>
+                <ListItem.Subtitle style={{ color: 'white'}}><Image source={require('../assets/star_filled.png')}
                 style={styles.tinyStarLogo} /> {item.rating}</ListItem.Subtitle>
                 <View style={styles.buttonContainer}>
                   <Button title="Delete" type="outline" onPress={() => deleteRatingItem(item.id)}></Button>
@@ -76,8 +76,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#191919',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+
+  //Scrollview container
+  searchResultsContainer: {
+    backgroundColor: '#191919',
   },
 
   //Text Style for saveRating text

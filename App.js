@@ -10,6 +10,7 @@ import Watchlist from './src/components/watchlist';
 import Ratings from './src/components/ratings';
 import ProfileScreen from './src/components/profile';
 import RateMovie from './src/components/ratemovie';
+import About from './src/components/about';
 
 const screenOptions = ({ route }) => ({
   headerShown: false,
@@ -42,7 +43,7 @@ const HomeStackScreen = () => (
 
 const SearchStackScreen = () => (
   <SearchStack.Navigator>
-    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search', headerStyle: {backgroundColor: '#1d1d1d'}, headerTintColor: '#fff'}}/>
+    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search', headerStyle: {backgroundColor: '#fff'}}}/>
     <SearchStack.Screen name="RateMovie" component={RateMovie} />
   </SearchStack.Navigator>
 );
@@ -50,8 +51,9 @@ const SearchStackScreen = () => (
 const YouPageStackScreen = () => (
   <YouStack.Navigator>
     <YouStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'You', headerShown: false}} />
-    <HomeStack.Screen name="Watchlist" component={Watchlist} options={{ headerStyle: {backgroundColor: '#1d1d1d'}, headerTintColor: '#fff'}}/>
-    <HomeStack.Screen name="Ratings" component={Ratings} options={{ headerStyle: {backgroundColor: '#1d1d1d'}, headerTintColor: '#fff'}}/>
+    <HomeStack.Screen name="Watchlist" component={Watchlist} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
+    <HomeStack.Screen name="Ratings" component={Ratings} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
+    <HomeStack.Screen name="About" component={About} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
   </YouStack.Navigator>
 );
 

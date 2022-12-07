@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   ratingsContainer: {
     marginTop: 100,
     backgroundColor: "#212121",
-    width: 300,
+    width: 287,
     marginBottom: 10,
 
     //Shadow for View
@@ -293,20 +293,18 @@ const styles = StyleSheet.create({
 
   ratingMoviesContainer: {
     flexDirection: 'row',
-    padding: 5,
+    padding: 10,
   },
 
   ratingMovies: {
     backgroundColor: 'rgba(52, 52, 52)',
     padding: 0,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start'
   },
 
   rowCenterTextRatings: {
     flexDirection: "row",
     alignItems: 'center',
-    paddingTop: 50,
+    paddingTop: 0,
     padding: 10,
   },
 

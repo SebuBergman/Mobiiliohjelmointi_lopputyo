@@ -61,6 +61,9 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
       </View>
+      <View style={styles.aboutApp}>
+        <Button title="About App" type="outline" onPress={() => navigation.navigate('About')} ></Button>
+      </View>
     </View>
   );
 }
@@ -124,5 +127,13 @@ const styles = StyleSheet.create({
   moviePosterArt: {
     width: 120,
     height: 175,
+  },
+
+  aboutApp: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 10,
+    padding: 5,
   },
 });
