@@ -9,7 +9,7 @@
 
 # Pixel Ratings
 
-A movie rating app (kinda like imdb)
+A movie rating app
 
 <!-- TABLE OF CONTENTS -->
   <summary>Table of Contents</summary>
