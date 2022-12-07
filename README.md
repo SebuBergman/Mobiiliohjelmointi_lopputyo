@@ -80,7 +80,7 @@ In order to run the app locally, you need the following:
    For more information about cloning repositories or troubleshooting, see [GitHub Docs](https://docs.github.com/en/repositories/creating-and-managing-   repositories/cloning-a-repository)
 2. Install NPM packages at \Triviapeli
    ```sh
-   npm install
+   npm install (IF that doesn't work (npm install --legacy-peer-deps))
    ```
 3. Start the app
    ```sh
