@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
 
   ratingMoviesContainer: {
     flexDirection: 'row',
-    padding: 10,
+    padding: 5,
   },
 
   ratingMovies: {
