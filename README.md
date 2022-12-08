@@ -7,9 +7,9 @@
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
-# Pixel Ratings
+# Pixel Ratings (Name subject to change)
 
-A movie rating app (kinda like imdb)
+A movie rating app
 
 <!-- TABLE OF CONTENTS -->
   <summary>Table of Contents</summary>
@@ -47,9 +47,9 @@ This project was built with the following tools and libraries:
 
 * [React Native](https://reactnative.dev/)
 * [React Navigation](https://reactnavigation.org/)
+* [React Native Elements](https://reactnativeelements.com/)
 * [Expo](https://expo.dev/)
 * [Expo-SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
-* [React Native Elements](https://reactnativeelements.com/)
 * [The Movie Database](https://www.themoviedb.org/documentation/api)
 <img src="src/assets/TheMovieDB.svg" alt="logo" width="200" height="auto" />
 
