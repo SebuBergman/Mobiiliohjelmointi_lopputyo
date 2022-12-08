@@ -87,6 +87,24 @@ export default function ProfileScreen({ navigation, route }) {
     }, null, null);
   }
 
+  const updateWatchlist = () => {
+    db.transaction(tx => {
+      tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
+        setWatchlistedMovies(rows._array)
+      );
+    }, null, null);
+  }
+
+  const deleteWatchlistItem = (id) => {
+    db.transaction(tx => {
+      tx.executeSql('delete from watchlist where id = ?;', [id]);
+    }, errorAlertDelete, updateWatchlist);
+  }
+
+  const errorAlertDelete = () => {
+    Alert.alert('Something went wrong with deletion');
+  }
+
   const addProfileName = () => {
     db.transaction(tx => {
     tx.executeSql(`SELECT profilename FROM profile WHERE id="1";`,
@@ -149,12 +167,12 @@ export default function ProfileScreen({ navigation, route }) {
         <View style={styles.rowCenterText}>
           <Text style={styles.headingText}>Your Watchlist</Text>
           <Text style={styles.normalText}> {watchlistAmount} </Text>
-          <Button title="See all" type="outline" onPress={() => navigation.navigate('Watchlist')} buttonStyle={{width:80}}></Button>
+          <Button title="See all" type="outline" onPress={() => navigation.navigate('Watchlist')} buttonStyle={{width:75}}></Button>
         </View>
         <ScrollView style={styles.watchlistedItems} horizontal={true}>
           {
             watchlistedMovies.map((item, i) => (
-              <ListItem key={i} containerStyle={styles.watchlistedMovie}>
+              <ListItem key={i} containerStyle={styles.watchlistedMovies}>
                 <View style={styles.watchlistColumn}>
                   <Image source={{uri: "https://image.tmdb.org/t/p/w500" + item.poster}} style={styles.moviePosterArt} />
                     <ListItem.Content>
@@ -334,6 +352,7 @@ const styles = StyleSheet.create({
 
   watchlistedItems: {
     marginLeft: 5,
+    width: 355,
   },
 
   rowCenterText: {
@@ -341,7 +360,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  watchlistedMovie: {
+  watchlistedMovies: {
     backgroundColor: "#2a2a2a",
     height: 300,
     width: 120,

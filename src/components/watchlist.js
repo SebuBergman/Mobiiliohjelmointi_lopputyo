@@ -39,7 +39,7 @@ export default function Watchlist({ navigation, route }) {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView>
         {
           watchlist.map((item, i) => (
@@ -64,8 +64,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#191919',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 
   moviePosterArt: {
