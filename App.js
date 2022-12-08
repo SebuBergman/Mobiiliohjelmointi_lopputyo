@@ -37,7 +37,7 @@ const YouStack = createNativeStackNavigator();
 
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
-    <HomeStack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}} />
+    <HomeStack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false, headerStyle: {backgroundColor: '#fff'}}} />
   </HomeStack.Navigator>
 );
 
@@ -50,7 +50,7 @@ const SearchStackScreen = () => (
 
 const YouPageStackScreen = () => (
   <YouStack.Navigator>
-    <YouStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'You', headerShown: false}} />
+    <YouStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'You', headerShown: false, headerStyle: {backgroundColor: '#fff'}}} />
     <HomeStack.Screen name="Watchlist" component={Watchlist} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
     <HomeStack.Screen name="Ratings" component={Ratings} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
     <HomeStack.Screen name="About" component={About} options={{ headerStyle: {backgroundColor: '#fff'}}}/>

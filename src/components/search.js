@@ -24,37 +24,12 @@ export default function SearchScreen({ navigation }) {
   const [defaultRating, setDefaultRating] = useState(2);
   const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
 
-  const CustomRatingBar = () => {
-    return (
-      <View style={styles.customRatingBarStyle}>
-        {
-          maxRating.map((item, key) => {
-            return (
-              <TouchableOpacity
-              activeOpacity={0.7}
-              key={item}
-              onPress={() => setDefaultRating(item)}
-              >
-                <Image 
-                style={styles.starImgStyle}
-                source={item <= defaultRating ? {uri: starImgFilled} : {uri: starImgCorner}}
-                />
-
-              </TouchableOpacity>
-            )
-          })
-        }
-      </View>
-    )
-  }
-
   const saveMovie = (movieDetails) => {
     db.transaction(tx => {
     tx.executeSql(`Select * FROM watchlist WHERE title="${movieDetails.original_title}";`,
     [],
     (tx, results) => {
-      //console.log(results);
-      console.log(results.rows.length);
+      //console.log(results.rows.length);
       if (results.rows.length == 0) {
         db.transaction(tx => {
           tx.executeSql('insert into watchlist (title, poster, release_date) values (?, ?, ?);',
@@ -118,8 +93,6 @@ export default function SearchScreen({ navigation }) {
         </ScrollView>
       </View>
   );
-
-  //<Button title="Rate Movie" onPress={rateMovie} />
 }
 
 const styles = StyleSheet.create({

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView, TextInput, StatusBar } from 'react-native';
 import { ListItem, Button, Avatar, Input, Rating, Icon } from 'react-native-elements';
 import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
@@ -31,8 +31,6 @@ export default function ProfileScreen({ navigation, route }) {
         tx.executeSql(`SELECT * FROM profile WHERE id="1";`,
         [],
         (tx, results) => {
-          console.log("results profiledone?:");
-          console.log(results.rows._array[0].profilename);
           if (results.rows.length == 0) {
             setModalVisible(true);
           } else {
@@ -110,8 +108,6 @@ export default function ProfileScreen({ navigation, route }) {
     tx.executeSql(`SELECT profilename FROM profile WHERE id="1";`,
     [],
     (tx, results) => {
-      console.log("Rows addProfile:");
-      console.log(results.rows);
       if (results.rows.length == 0) {
         db.transaction(tx => {
           tx.executeSql('INSERT INTO profile (profilename, watchlisted, ratings) values (?, ?, ?);',
@@ -130,6 +126,11 @@ export default function ProfileScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar
+        animated={true}
+        backgroundColor="#191919"
+        barStyle = "light-content"
+      />
       <View style={styles.profileHeader}>
         <Icon
           name='person-circle-outline'
@@ -261,26 +262,11 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
 
-  //PartyMode Options Addplayers Popup (PartyModeOptions)
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 40,
-  },
-
-  addName: {
-    fontSize: 18,
-    borderBottomWidth: 1.0,
-    borderColor: "#0055b3",
-    marginBottom: 5,
-    color: 'black',
-  },
-
+  //Profile name and settings button
   profileHeader: {
     position: 'absolute',
     left: 10,
-    top: 50,
+    top: 10,
     flexDirection: "row",
     justifyContent: 'center',
   },
@@ -288,12 +274,11 @@ const styles = StyleSheet.create({
   settingsIconHeader: {
     position: 'absolute',
     right: 20,
-    top: 50,
+    top: 10,
   },
 
   //Ratings Styles
   ratingsContainer: {
-    marginTop: 100,
     backgroundColor: "#212121",
     width: 287,
     marginBottom: 10,
@@ -440,5 +425,14 @@ const styles = StyleSheet.create({
   outsideModal: {
     backgroundColor: "rgba(1, 1, 1, 0.2)",
     flex: 1,
+  },
+
+  //Modal AddName
+  addName: {
+    fontSize: 18,
+    borderBottomWidth: 1.0,
+    borderColor: "#0055b3",
+    marginBottom: 5,
+    color: 'black',
   },
 });

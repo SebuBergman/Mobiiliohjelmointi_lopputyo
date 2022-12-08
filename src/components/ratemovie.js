@@ -32,8 +32,6 @@ export default function RateMovie({ navigation, route }) {
     tx.executeSql(`Select * FROM ratings WHERE title="${movieDetails.original_title}";`,
     [],
     (tx, results) => {
-      //console.log(results);
-      console.log(results.rows.length);
       if (results.rows.length == 0) {
         db.transaction(tx => {
           tx.executeSql('insert into ratings (title, poster, release_date, rating) values (?, ?, ?, ?);',

@@ -8,40 +8,39 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('moviedb.db');
 
 export default function Ratings({ navigation }) {
-    const [movie, setMovie] = useState('');
-    const [movieWithRating, setMovieWithRating] = useState('');
-    const [ratingsList, setRatingsList] = useState([]);
+  const [movie, setMovie] = useState('');
+  const [movieWithRating, setMovieWithRating] = useState('');
+  const [ratingsList, setRatingsList] = useState([]);
 
-    //Stars for rating
-    const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
-    const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
+  //Stars for rating
+  const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
+  const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
 
-    //Rating PopUp consts
-    const [defaultRating, setDefaultRating] = useState(2);
-    const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
+  //Rating PopUp consts
+  const [defaultRating, setDefaultRating] = useState(2);
+  const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
 
-    useFocusEffect(
-    React.useCallback(() => {
-      db.transaction(tx => {
-      tx.executeSql('select * from ratings;', [], (_, { rows }) =>
-        setRatingsList(rows._array)
-      );
-    }, null, null);
-    console.log(ratingsList);
-    }, []));
-
-    const updateRatingsList = () => {
+  useFocusEffect(
+  React.useCallback(() => {
     db.transaction(tx => {
-      tx.executeSql('select * from ratings;', [], (_, { rows }) =>
-        setRatingsList(rows._array)
-      );
-    }, null, null);
-    }
+    tx.executeSql('select * from ratings;', [], (_, { rows }) =>
+      setRatingsList(rows._array)
+    );
+  }, null, null);
+  }, []));
 
-    const deleteRatingItem = (id) => {
-    db.transaction(tx => {
-      tx.executeSql('delete from ratings where id = ?;', [id]);
-    }, errorAlertDelete, updateRatingsList);
+  const updateRatingsList = () => {
+  db.transaction(tx => {
+    tx.executeSql('select * from ratings;', [], (_, { rows }) =>
+      setRatingsList(rows._array)
+    );
+  }, null, null);
+  }
+
+  const deleteRatingItem = (id) => {
+  db.transaction(tx => {
+    tx.executeSql('delete from ratings where id = ?;', [id]);
+  }, errorAlertDelete, updateRatingsList);
   }
 
   const errorAlertDelete = () => {
