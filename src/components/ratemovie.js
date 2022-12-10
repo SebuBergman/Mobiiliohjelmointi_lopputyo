@@ -1,27 +1,17 @@
-import React, { useCallback } from 'react';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, Alert } from 'react-native';
-import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
+import React from 'react';
+import { useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { Button } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
 
 export default function RateMovie({ navigation, route }) {
   const { movieDetails } = route.params;
-  const [ratingsItem, setRatingsItem] = useState();
-
-  const [ratingsList, setRatingsList] = useState([]);
-
-  const [movie, setMovie] = useState('');
-  const [movieWithRating, setMovieWithRating] = useState([]);
-  const [emptyArray, setEmptyArray] = useState([]);
   
   //Stars for rating
   const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
   const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
-
-  // Popup modalVisible
-  const [modalVisible, setModalVisible] = useState(false);
 
   //Rating PopUp consts
   const [defaultRating, setDefaultRating] = useState(2);

@@ -38,12 +38,13 @@ const YouStack = createNativeStackNavigator();
 const HomeStackScreen = () => (
   <HomeStack.Navigator>
     <HomeStack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false, headerStyle: {backgroundColor: '#fff'}}} />
+    <HomeStack.Screen name="About" component={About} options={{ headerShown: false, headerStyle: {backgroundColor: '#fff'}}}/>
   </HomeStack.Navigator>
 );
 
 const SearchStackScreen = () => (
   <SearchStack.Navigator>
-    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search', headerStyle: {backgroundColor: '#fff'}}}/>
+    <SearchStack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search', headerShown: false, headerStyle: {backgroundColor: '#fff'}}}/>
     <SearchStack.Screen name="RateMovie" component={RateMovie} />
   </SearchStack.Navigator>
 );
@@ -51,9 +52,8 @@ const SearchStackScreen = () => (
 const YouPageStackScreen = () => (
   <YouStack.Navigator>
     <YouStack.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'You', headerShown: false, headerStyle: {backgroundColor: '#fff'}}} />
-    <HomeStack.Screen name="Watchlist" component={Watchlist} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
-    <HomeStack.Screen name="Ratings" component={Ratings} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
-    <HomeStack.Screen name="About" component={About} options={{ headerStyle: {backgroundColor: '#fff'}}}/>
+    <YouStack.Screen name="Watchlist" component={Watchlist} options={{ headerShown: false, headerStyle: {backgroundColor: '#fff'}}}/>
+    <YouStack.Screen name="Ratings" component={Ratings} options={{ headerShown: false, headerStyle: {backgroundColor: '#fff'}}}/>
   </YouStack.Navigator>
 );
 

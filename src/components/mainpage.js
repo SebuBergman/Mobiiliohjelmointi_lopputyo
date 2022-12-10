@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView, StatusBar, ActivityIndicator } from 'react-native';
-import { ListItem, Button, Avatar, Input, Rating, Icon} from 'react-native-elements';
+import { StyleSheet, View, Text, ScrollView, StatusBar } from 'react-native';
+import { ListItem, Button, Image} from 'react-native-elements';
 import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
 
@@ -10,9 +10,9 @@ const db = SQLite.openDatabase('moviedb.db');
 export default function HomeScreen({ navigation }) {
   const [popularMovies, setPopularMovies] = useState([]);
   const [watchlistedMovies, setWatchlistedMovies] = useState([]);
-  const [upcomingMoviesSetter, setUpcomingMoviesSetter] = useState([]);
-  const [upcomingMovies, setUpcomingMovies] = useState([]);
-  const [upcomingMovieImage, setUpcomingMovieImage]= useState("../assets/LoadingImage.png");
+  const [activeUpcomingMovie, setActiveUpcomingMovie] = useState([{backdrop: "../assets/LoadingImage.png", title: "Loading", poster: "../assets/LoadingImage.png"}]);
+  const SECONDS_MS = 10000;
+  let movieCount = 0;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -25,9 +25,6 @@ export default function HomeScreen({ navigation }) {
       db.transaction(tx => {
         tx.executeSql('create table if not exists profile (id integer primary key not null, profilename text, watchlisted integer, ratings integer);');
       }, null, null);
-      db.transaction(tx => {
-        tx.executeSql('create table if not exists upcomingmovies (id integer primary key not null, title text, poster text, backdrop text);');
-      }, null, null);
 
       fetch("https://api.themoviedb.org/3/movie/popular?api_key=7781089812bce5be2d5c7957b17b321a&language=en-US&page=1")
         .then(res => res.json())
@@ -39,14 +36,7 @@ export default function HomeScreen({ navigation }) {
       fetch("https://api.themoviedb.org/3/movie/upcoming?api_key=7781089812bce5be2d5c7957b17b321a&language=en-US&page=1")
         .then(res => res.json())
         .then(data => {
-          setUpcomingMoviesSetter(data.results);
-
-          for (let i = 0; i < 10; i++) {
-            db.transaction(tx => {
-            tx.executeSql('insert into upcomingmovies (title, poster, backdrop) values (?, ?, ?);',
-              [upcomingMoviesSetter[i].original_title, upcomingMoviesSetter[i].poster_path, upcomingMoviesSetter[i].backdrop_path]);
-            }, errorAlertSave, AlertSave);
-          } 
+          setActiveUpcomingMovie([{backdrop: "https://image.tmdb.org/t/p/w500" + data.results[movieCount].backdrop_path, title: data.results[movieCount].original_title, poster: "https://image.tmdb.org/t/p/w500" + data.results[movieCount].poster_path}]);
         })
         .catch(err => console.error(err));
 
@@ -54,16 +44,33 @@ export default function HomeScreen({ navigation }) {
         tx.executeSql('select * from watchlist;', [], (_, { rows }) =>
           setWatchlistedMovies(rows._array)
         );
-        }, null, null);
-
-      db.transaction(tx => {
-        tx.executeSql('select * from upcomingmovies;', [], (_, { rows }) =>
-          setUpcomingMovies(rows._array)
-        );
-        }, null, null);
-
-        setUpcomingMovieImage("https://image.tmdb.org/t/p/w500" + upcomingMovies[0].backdrop_path)
+        }, null, null); 
     }, []));
+
+    //Use effect for changing upcoming movie
+    useEffect(() => {
+      const interval = setInterval(() => {
+        if (movieCount == 18) {
+          movieCount = 0;
+          fetch("https://api.themoviedb.org/3/movie/upcoming?api_key=7781089812bce5be2d5c7957b17b321a&language=en-US&page=1")
+            .then(res => res.json())
+            .then(data => {
+              setActiveUpcomingMovie([{backdrop: "https://image.tmdb.org/t/p/w500" + data.results[movieCount].backdrop_path, title: data.results[movieCount].original_title, poster: "https://image.tmdb.org/t/p/w500" + data.results[movieCount].poster_path}]);
+            })
+            .catch(err => console.error(err));
+        } else {
+          movieCount++;
+          fetch("https://api.themoviedb.org/3/movie/upcoming?api_key=7781089812bce5be2d5c7957b17b321a&language=en-US&page=1")
+            .then(res => res.json())
+            .then(data => {
+              setActiveUpcomingMovie([{backdrop: "https://image.tmdb.org/t/p/w500" + data.results[movieCount].backdrop_path, title: data.results[movieCount].original_title, poster: "https://image.tmdb.org/t/p/w500" + data.results[movieCount].poster_path}]);
+            })
+            .catch(err => console.error(err));
+        }
+      }, SECONDS_MS);
+
+      return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    }, []);
 
   return (
       <View style={styles.container}>
@@ -73,20 +80,16 @@ export default function HomeScreen({ navigation }) {
           barStyle = "light-content"
         />
         <View>
-          <Image source={{uri: upcomingMovieImage}} style={styles.movieBackdropArt} />
+          <Image source={{uri: activeUpcomingMovie[0].backdrop}} style={styles.movieBackdropArt}/>
           <View style={styles.upcomingMovieText}>
             <Text style={styles.normalText}>Upcoming Movies:</Text>
-            <Text style={styles.normalText}>{upcomingMovies[0].original_title}</Text>
+            <Text style={styles.normalText}>{activeUpcomingMovie[0].title}</Text>
           </View>
         </View>
         <View style={styles.upcomingMoviePoster}>
-          <Icon
-  name='g-translate'
-  color='#00aced' />
-          <Image source={{uri: "https://image.tmdb.org/t/p/w500" + upcomingMovies[0].poster_path}} style={styles.upcomingPosterArt} />
+          <Image source={{uri: activeUpcomingMovie[0].poster}} style={styles.upcomingPosterArt} />
         </View>
         <View style={styles.welcomeContainer}>
-          <Text style={styles.heading}>Welcome to Pixel Ratings</Text>
           <View style={styles.popularContainer}>
             <Text style={styles.headingText}>Popular Movies:</Text>
             <View style={styles.centerScrllView}>
@@ -150,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   movieBackdropArt: {
-    height: 200,
+    height: 199,
   },
 
   upcomingMoviePoster: {
@@ -163,6 +166,11 @@ const styles = StyleSheet.create({
   upcomingPosterArt: {
     width: 100,
     height: 145.8,
+  },
+
+  //Styles for Popular Movies containers
+  welcomeContainer: {
+    paddingTop: 20,
   },
 
   popularContainer: {

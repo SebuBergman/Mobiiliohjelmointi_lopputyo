@@ -1,24 +1,14 @@
-import React, { useCallback } from 'react';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
-import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
+import React from 'react';
+import { useState } from 'react';
+import { StyleSheet, View, Image, ScrollView, Text } from 'react-native';
+import { ListItem, Button } from 'react-native-elements';
 import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
 
-export default function Ratings({ navigation }) {
-  const [movie, setMovie] = useState('');
-  const [movieWithRating, setMovieWithRating] = useState('');
+export default function Ratings() {
   const [ratingsList, setRatingsList] = useState([]);
-
-  //Stars for rating
-  const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
-  const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
-
-  //Rating PopUp consts
-  const [defaultRating, setDefaultRating] = useState(2);
-  const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
 
   useFocusEffect(
   React.useCallback(() => {
@@ -49,6 +39,7 @@ export default function Ratings({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headingText}>Ratings</Text>
       <ScrollView style={styles.searchResultsContainer}>
         {
           ratingsList.map((item, i) => (
@@ -75,6 +66,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#191919',
+  },
+
+  //Font Style
+  headingText: {
+    color: 'white',
+    fontSize: 30,
+    paddingLeft: 15,
+    paddingTop: 10,
+    color: "#fff",
+    fontWeight: "bold",
   },
 
   //Scrollview container

@@ -1,15 +1,14 @@
-import React, { useCallback } from 'react';
-import { useEffect, useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView, TextInput, StatusBar } from 'react-native';
-import { ListItem, Button, Avatar, Input, Rating, Icon } from 'react-native-elements';
+import { ListItem, Button, Icon } from 'react-native-elements';
 import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
 
-export default function ProfileScreen({ navigation, route }) {
+export default function ProfileScreen({ navigation }) {
   const [profileName, setProfileName] = useState('Set profile name');
-  const [profileNameTemp, setProfileNameTemp] = useState('');
   const [profileList, setProfileList] = useState([]);
   const [ratingsAmount, setRatingsAmount] = useState([]);
   const [watchlistAmount, setWatchlistAmount] = useState([]);
@@ -51,7 +50,7 @@ export default function ProfileScreen({ navigation, route }) {
         tx.executeSql(`SELECT poster FROM ratings;`,
         [],
         (tx, results) => {
-          console.log(results.rows);
+          //console.log(results.rows);
         });
       });
 
@@ -160,14 +159,14 @@ export default function ProfileScreen({ navigation, route }) {
           </View>
           <View style={styles.rowCenterTextRatings}>
             <Text style={styles.headingText}>Ratings</Text>
-            <Text style={styles.normalText}> {ratingsAmount} </Text>
+            <Text style={styles.numberText}> {ratingsAmount} </Text>
           </View>
         </TouchableOpacity>
       </View>
       <View style={styles.watchlistContainer}>
         <View style={styles.rowCenterText}>
           <Text style={styles.headingText}>Your Watchlist</Text>
-          <Text style={styles.normalText}> {watchlistAmount} </Text>
+          <Text style={styles.numberText}> {watchlistAmount} </Text>
           <Button title="See all" type="outline" onPress={() => navigation.navigate('Watchlist')} buttonStyle={{width:75}}></Button>
         </View>
         <ScrollView style={styles.watchlistedItems} horizontal={true}>
@@ -246,11 +245,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
 
-  normalText: {
-    color: 'white',
-    fontSize: 20,
-  },
-
   numberText: {
     color: 'white',
     fontSize: 15,
@@ -266,7 +260,7 @@ const styles = StyleSheet.create({
   profileHeader: {
     position: 'absolute',
     left: 10,
-    top: 10,
+    top: 15,
     flexDirection: "row",
     justifyContent: 'center',
   },
@@ -274,14 +268,14 @@ const styles = StyleSheet.create({
   settingsIconHeader: {
     position: 'absolute',
     right: 20,
-    top: 10,
+    top: 15,
   },
 
   //Ratings Styles
   ratingsContainer: {
     backgroundColor: "#212121",
     width: 287,
-    marginBottom: 10,
+    marginBottom: 15,
 
     //Shadow for View
     shadowColor: "black",

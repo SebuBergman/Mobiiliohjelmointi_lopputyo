@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView, Alert } from 'react-native';
-import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
+import { StyleSheet, View, Image, ScrollView, Alert, TextInput } from 'react-native';
+import { ListItem, Button, Input } from 'react-native-elements';
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
@@ -9,27 +9,12 @@ const db = SQLite.openDatabase('moviedb.db');
 export default function SearchScreen({ navigation }) {
   const [keyword, setKeyword] = useState();
   const [searchResults, setSearchResults] = useState([]);
-  /*const [movieForRating, setMovieForRating] = useState('')*/
-  const [watchlist, setWatchlist] = useState([]);
-  const [ratingsList, setRatingsList] = useState([]);
-
-  //Stars for rating
-  const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
-  const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
-
-  // Popup modalVisible
-  const [modalVisible, setModalVisible] = useState(false);
-
-  //Rating PopUp consts
-  const [defaultRating, setDefaultRating] = useState(2);
-  const [maxRating, setMaxRating] = useState([1,2,3,4,5]);
 
   const saveMovie = (movieDetails) => {
     db.transaction(tx => {
     tx.executeSql(`Select * FROM watchlist WHERE title="${movieDetails.original_title}";`,
     [],
     (tx, results) => {
-      //console.log(results.rows.length);
       if (results.rows.length == 0) {
         db.transaction(tx => {
           tx.executeSql('insert into watchlist (title, poster, release_date) values (?, ?, ?);',
@@ -62,15 +47,24 @@ export default function SearchScreen({ navigation }) {
     .then(res => res.json())
     .then(data => {
       setSearchResults(data.results);
-      //console.log(searchResults);
     })
     .catch(err => console.error(err));
   }
 
+  //<Input placeholder="Input" onChangeText={text => setKeyword(text)} inputStyle={{color: 'white'}} color="white" containerStyle={{backgroundColor: 'white', borderWidth: 1,}} />
+  /* 
+  <TextInput
+            style={styles.input}
+            onChangeText={text => setKeyword(text)}
+            placeholder="Search movie"
+            placeholderTextColor="grey"
+          />
+  */
+
   return (
       <View style={styles.container}>
         <View style={styles.searchContainer}>
-          <Input placeholder="Input" onChangeText={text => setKeyword(text)} inputStyle={{color: 'white'}} color="white" />
+          <Input placeholder="Search movies" onChangeText={text => setKeyword(text)} inputStyle={{color: 'white'}} color="white" leftIcon={{ type: 'ionicon', name: 'search-outline', color: '#fff' }} />
           <Button title="Search" type="outline" onPress={getMovie} ></Button>
         </View>
         <ScrollView style={styles.searchResultsContainer}>
@@ -129,6 +123,17 @@ const styles = StyleSheet.create({
   moviePosterArt: {
     width: 100,
     height: 150,
+  },
+
+  //Search Input styles
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    width: 330,
+    backgroundColor: "white",
   },
 
   //Button Styles (addRating & saveRating)

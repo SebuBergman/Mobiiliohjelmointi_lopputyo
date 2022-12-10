@@ -1,14 +1,13 @@
 import React from "react";
-import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, Pressable, Image, ScrollView } from 'react-native';
-import { ListItem, Button, Avatar, Input, Rating } from 'react-native-elements';
+import { useState } from 'react';
+import { StyleSheet, View, Image, ScrollView, Text } from 'react-native';
+import { ListItem, Button } from 'react-native-elements';
 import { useFocusEffect } from "@react-navigation/core";
 import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase('moviedb.db');
 
 export default function Watchlist({ navigation, route }) {
-
   const [watchlist, setWatchlist] = useState([]);
 
   useFocusEffect(
@@ -40,6 +39,7 @@ export default function Watchlist({ navigation, route }) {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headingText}>Watchlist</Text>
       <ScrollView>
         {
           watchlist.map((item, i) => (
@@ -64,6 +64,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#191919',
+  },
+
+  //Font Style
+  headingText: {
+    color: 'white',
+    fontSize: 30,
+    paddingLeft: 15,
+    paddingTop: 10,
+    color: "#fff",
+    fontWeight: "bold",
   },
 
   moviePosterArt: {
