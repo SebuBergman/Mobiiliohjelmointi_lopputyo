@@ -35,7 +35,7 @@ A movie rating app
 
 Pixel Ratings was created during the Mobile Programming (Mobiiliohjelmointi) course at Haaga-Helia University of Applied Sciences in the autumn of 2022.
 
-Pixel Ratings is a React Native mobile app where a user can search for movies and rate them or add them to a playlist. The app also shows popular movie (right now) on the homescreen. The movies are fetched from [The Movie Database](https://www.themoviedb.org/documentation/api).
+Pixel Ratings is a React Native mobile app where a user can search for movies and rate them or add them to a watchlist. The app also shows popular movies and upcoming movies on the homescreen. The movies are fetched from [The Movie Database](https://www.themoviedb.org/documentation/api).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
