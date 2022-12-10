@@ -7,7 +7,7 @@
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
-# Pixel Ratings (Name subject to change)
+# Pixel Ratings
 
 A movie rating app
 
